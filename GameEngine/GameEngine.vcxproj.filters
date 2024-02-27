@@ -24,7 +24,7 @@
     <ClInclude Include="Window.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
-    <ClInclude Include="transform.h">
+    <ClInclude Include="Transform.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
   </ItemGroup>
@@ -40,7 +40,7 @@
     <ClCompile Include="Rendering.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
-    <ClCompile Include="transform.cpp">
+    <ClCompile Include="Transform.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
