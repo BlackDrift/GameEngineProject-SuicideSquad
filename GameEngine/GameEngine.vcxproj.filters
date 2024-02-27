@@ -21,10 +21,27 @@
     <ClInclude Include="resource.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="transform.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
       <Filter>Resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Rendering.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="transform.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
