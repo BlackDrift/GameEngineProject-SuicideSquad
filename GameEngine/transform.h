@@ -19,11 +19,7 @@ struct Transform
     DirectX::XMMATRIX mPos;
 
     DirectX::XMMATRIX matrix;
-    void FromMatrix(DirectX::XMMATRIX* pMat);
-    void UpdateRotationFromVectors();
-    void UpdateRotationFromQuaternion();
-    void UpdateRotationFromMatrix();
-    void UpdateMatrix();
+
+    void Init(float x, float y, float z);
     void Rotate();
-    void RotateWorld(DirectX::XMMATRIX* pMatrix);
 };
