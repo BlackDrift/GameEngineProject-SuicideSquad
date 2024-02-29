@@ -36,18 +36,19 @@ void Transform::Rotate() {
 	vDir.z = matRotFloat._33;
 }
 
+void Transform::Init(float x, float y, float z) {
+	// Toujours initialiser les matrices, les quaternions, les vecteurs…
+	mSca = DirectX::XMMatrixIdentity();
+	mPos = DirectX::XMMatrixIdentity();
+	mRot = DirectX::XMMatrixIdentity();
 
-// Toujours initialiser les matrices, les quaternions, les vecteurs…
-mSca = DirectX::XMMatrixIdentity();
-mPos = DirectX::XMMatrixIdentity();
-mRot = DirectX::XMMatrixIdentity();
+	// On peut effectuer des operations sur chaque matrice indépendamment
+	mSca = DirectX::XMMatrixScaling(x, y, z);
+	mPos = DirectX::XMMatrixTranslation(x, y, z);
+	mRot = DirectX::XMMatrixRotationY(3.14f);
 
-// On peut effectuer des operations sur chaque matrice indépendamment
-mSca = DirectX::XMMatrixScaling(x, y, z);
-mPos = DirectX::XMMatrixTranslation(x, y, z);
-mRot = DirectX::XMMatrixRotationY(3.14f);
-
-// Combiner les matrices dans cet ordre
-DirectX::XMMATRIX mat = mSca;
-mat *= mRot;
-mat *= mPos;
+	// Combiner les matrices dans cet ordre
+	DirectX::XMMATRIX mat = mSca;
+	mat *= mRot;
+	mat *= mPos;
+}
