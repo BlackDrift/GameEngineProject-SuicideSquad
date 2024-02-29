@@ -75,6 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Rendering.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Window.h" />
