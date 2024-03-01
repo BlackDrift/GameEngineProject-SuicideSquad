@@ -1,10 +1,12 @@
 #pragma once
 #include <d3d12.h>
 class InputManager {
-	InputManager(int key, char* type);
-	bool Update();
+public:
+	InputManager(int key, const char* type);
+	void Update();
 	bool input;
 	bool lastInput;
+private:
 	int key;
-	char* type;
+	const char* type;
 };
