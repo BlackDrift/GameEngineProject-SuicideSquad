@@ -75,6 +75,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Rendering.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Transform.h" />
@@ -84,6 +85,7 @@
     <ResourceCompile Include="GameEngine.rc" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="Window.cpp" />
