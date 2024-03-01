@@ -13,8 +13,8 @@ int _stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//renderer.Rendering::InitializeD3D12(window.hWnd, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	while (true) {
-		if (const  auto msgCode = Window::ProcessMessages())
-			return *msgCode;
+		if (Window::ProcessMessages() == false)
+			return 0;
 	}
 
 	//MessageBox(window.hWnd, message, nom de la box, MB_OK);
