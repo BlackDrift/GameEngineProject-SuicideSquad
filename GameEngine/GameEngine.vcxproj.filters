@@ -33,6 +33,9 @@
     <ClInclude Include="InputManager.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -50,6 +53,9 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
