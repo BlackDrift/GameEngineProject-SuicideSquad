@@ -10,7 +10,11 @@ int _stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Window");
 
-	//renderer.Rendering::InitializeD3D12(window.hWnd, WINDOW_WIDTH, WINDOW_HEIGHT);
+	if(renderer.InitializeD3D12(window.hWnd, WINDOW_WIDTH, WINDOW_HEIGHT) == false)
+	{
+		MessageBox(window.hWnd, L"DirectX12 failed to compile", L"Error - Initialize", 0);
+		return 0;
+	}
 
 	while (true) {
 		if (Window::ProcessMessages() == false)
