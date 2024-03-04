@@ -30,6 +30,24 @@
     <ClInclude Include="Rendering.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -44,6 +62,24 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
