@@ -16,6 +16,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source\Private\Vendor">
+      <UniqueIdentifier>{db9f5844-01f7-4631-b697-c9f44d59a911}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -35,6 +38,12 @@
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Source\Private\Vendor</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source\Private</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
