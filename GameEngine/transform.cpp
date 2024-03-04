@@ -1,7 +1,7 @@
 #include "Transform.h"
 void Transform::Rotate() {
 	// Créer un quaternion pour chaque rotation (delta)
-	DirectX::XMVECTOR quat;
+	DirectX::XMVECTOR quat = {};
 	const DirectX::XMFLOAT3 vDirConst = vDir;
 	const DirectX::XMFLOAT3 vRightConst = vRight;
 	const DirectX::XMFLOAT3 vUpConst = vUp;

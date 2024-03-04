@@ -30,6 +30,9 @@
     <ClInclude Include="Rendering.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -44,6 +47,9 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="Transform.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
