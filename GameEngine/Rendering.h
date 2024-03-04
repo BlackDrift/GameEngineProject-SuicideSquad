@@ -4,5 +4,6 @@
 
 class Rendering
 {
-	bool InitializeD3D12(HWND hwnd, int screenWidth, int screenHeight);
+public:
+	bool InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight);
 };

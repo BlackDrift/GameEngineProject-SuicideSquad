@@ -1,6 +1,6 @@
 #include "Rendering.h"
 
-bool Rendering::InitializeD3D12(HWND hwnd, int screenWidth, int screenHeight)
+bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
 {
     IDXGIFactory4* dxgiFactory;
     HRESULT result = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
@@ -9,7 +9,7 @@ bool Rendering::InitializeD3D12(HWND hwnd, int screenWidth, int screenHeight)
         return false;
     }
 
-    IDXGIAdapter1* adapter;
+    IDXGIAdapter1* adapter = nullptr;
     for (UINT adapterIndex = 0; dxgiFactory->EnumAdapters1(adapterIndex, &adapter) != DXGI_ERROR_NOT_FOUND; ++adapterIndex) {
         DXGI_ADAPTER_DESC1 desc;
         adapter->GetDesc1(&desc);
@@ -34,7 +34,7 @@ bool Rendering::InitializeD3D12(HWND hwnd, int screenWidth, int screenHeight)
         return false;
     }
 
-    ID3D12Device* device;
+    ID3D12Device* device = nullptr;
     result = D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&device));
     if (FAILED(result)) {
         // Handle error 
@@ -43,8 +43,36 @@ bool Rendering::InitializeD3D12(HWND hwnd, int screenWidth, int screenHeight)
         return false;
     }
 
+    // Create a descriptor for the swap chain
+    DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+    swapChainDesc.BufferCount = 2; 
+    swapChainDesc.BufferDesc.Width = screenWidth;
+    swapChainDesc.BufferDesc.Height = screenHeight;
+    swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    swapChainDesc.OutputWindow = hWnd;
+    swapChainDesc.SampleDesc.Count = 1;
+    swapChainDesc.Windowed = TRUE;
+
+    // Create the swap chain
+    IDXGISwapChain* swapChain = nullptr;
+    result = dxgiFactory->CreateSwapChain(device, &swapChainDesc, &swapChain);
+    if (FAILED(result)) {
+        // Handle error
+        device->Release();
+        adapter->Release();
+        dxgiFactory->Release();
+        return false;
+    }
+
+    // Clean up resources
+    swapChain->Release();
+    device->Release();
     adapter->Release();
     dxgiFactory->Release();
+
+    // Device, adapter, and swap chain are now ready for rendering
 
     return true;
 }

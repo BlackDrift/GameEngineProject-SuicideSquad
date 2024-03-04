@@ -35,20 +35,20 @@ Window::~Window() {
 	DestroyWindow(hWnd);
 }
 
-std::optional<int> Window::ProcessMessages() {
+bool Window::ProcessMessages() {
 	MSG msg = {};
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 		if (msg.message == WM_QUIT)
-			return msg.wParam;
+			return false;
 
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 
-	return {};
+	return true;
 }
 
-LRESULT _stdcall Window::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+LRESULT Window::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
 	case WM_DESTROY:
 		PostQuitMessage(0);
