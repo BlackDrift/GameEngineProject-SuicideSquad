@@ -39,6 +39,12 @@
     <ClInclude Include="GameObject.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -62,6 +68,12 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
