@@ -48,6 +48,9 @@
     <ClInclude Include="Camera.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -80,6 +83,9 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
