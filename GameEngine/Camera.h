@@ -1,6 +1,9 @@
 #pragma once
 #include "Component.h"
 #include "Window.h"
+#include <d3d12.h>
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
 class CameraComponent : public Component {
 private:
     DirectX::XMFLOAT3 position;
