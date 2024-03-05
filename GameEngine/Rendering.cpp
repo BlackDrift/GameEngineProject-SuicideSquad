@@ -49,10 +49,17 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
         return false;
     }
 
-    Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCommandQueue;
-    Microsoft::WRL::ComPtr<ID3D12CommandAllocator> mDirectCmdListAlloc;
-    Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList;
+    // CREATE FENCE
+	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
 
+    DX::ThrowIfFailed(device->CreateFence(
+        0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
+    mRtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    mDsvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+    mCbvSrvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
+
+    // CREATE COMMAND QUEUE
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
@@ -72,8 +79,10 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
     // closed before calling Reset.
     mCommandList->Close();
 
+    // Release the previously created Swap Chain
     swapChain.Reset();
 
+    // CREATE SWAP CHAIN
 	DXGI_SWAP_CHAIN_DESC sd;
 	sd.BufferDesc.Width = screenWidth;
 	sd.BufferDesc.Height = screenHeight;
@@ -106,12 +115,99 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
         return false;
     }
 
-    // Clean up resources
-    device->Release();
-    adapter->Release();
-    dxgiFactory->Release();
+    // CREATE DESCRIPTOR HEAPS
+	D3D12_DESCRIPTOR_HEAP_DESC rtvHeapDesc;
+	rtvHeapDesc.NumDescriptors = swapChainBufferCount;
+	rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	rtvHeapDesc.NodeMask = 0;
 
-    // Device, adapter, and swap chain are now ready for rendering
+	DX::ThrowIfFailed(device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
+	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+	dsvHeapDesc.NumDescriptors = 1;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	dsvHeapDesc.NodeMask = 0;
+	DX::ThrowIfFailed(device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
+
+    // CREATE RENDER TARGET VIEW
+    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(
+        mRtvHeap->GetCPUDescriptorHandleForHeapStart());
+    for (UINT i = 0; i < swapChainBufferCount; i++)
+    {
+        // Get the ith buffer in the swap chain.
+        DX::ThrowIfFailed(swapChain->GetBuffer(
+            i, IID_PPV_ARGS(&mSwapChainBuffer[i])));
+        // Create an RTV to it.
+        device->CreateRenderTargetView(
+            mSwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);
+        // Next entry in heap.
+        rtvHeapHandle.Offset(1, mRtvDescriptorSize);
+    }
+
+    // Create the depth/stencil buffer and view.
+    D3D12_RESOURCE_DESC depthStencilDesc;
+    depthStencilDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+    depthStencilDesc.Alignment = 0;
+    depthStencilDesc.Width = screenWidth;
+    depthStencilDesc.Height = screenHeight;
+    depthStencilDesc.DepthOrArraySize = 1;
+    depthStencilDesc.MipLevels = 1;
+    depthStencilDesc.Format = mDepthStencilFormat;
+    depthStencilDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
+    depthStencilDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
+    depthStencilDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+    depthStencilDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
+    D3D12_CLEAR_VALUE optClear;
+    optClear.Format = mDepthStencilFormat;
+    optClear.DepthStencil.Depth = 1.0f;
+    optClear.DepthStencil.Stencil = 0;
+    CD3DX12_HEAP_PROPERTIES pHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+    DX::ThrowIfFailed(device->CreateCommittedResource(
+		&pHeapProperties,
+        D3D12_HEAP_FLAG_NONE,
+        &depthStencilDesc,
+        D3D12_RESOURCE_STATE_COMMON,
+        &optClear,
+        IID_PPV_ARGS(mDepthStencilBuffer.GetAddressOf())));
+    // Create descriptor to mip level 0 of entire resource using the
+    // format of the resource.
+    device->CreateDepthStencilView(
+        mDepthStencilBuffer.Get(),
+        nullptr,
+        DepthStencilView());
+    // Transition the resource from its initial state to be used as a depth buffer.
+    CD3DX12_RESOURCE_BARRIER pBarriers = CD3DX12_RESOURCE_BARRIER::Transition(mDepthStencilBuffer.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+    mCommandList->ResourceBarrier(1, &pBarriers);
+
+    D3D12_VIEWPORT vp;
+    vp.TopLeftX = 0.0f;
+    vp.TopLeftY = 0.0f;
+    vp.Width = static_cast<float>(screenWidth);
+    vp.Height = static_cast<float>(screenHeight);
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    mCommandList->RSSetViewports(1, &vp);
+
+    mCommandList->ClearRenderTargetView(CurrentBackBufferView(), DirectX::Colors::LightSteelBlue, 0, NULL);
+
+    // Clean up resources
+    //device->Release();
+    //adapter->Release();
+    //dxgiFactory->Release();
 
     return true;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE Rendering::CurrentBackBufferView()const
+{
+    // CD3DX12 constructor to offset to the RTV of the current back buffer.
+    return CD3DX12_CPU_DESCRIPTOR_HANDLE(
+        mRtvHeap->GetCPUDescriptorHandleForHeapStart(),// handle start
+        mCurrBackBuffer, // index to offset
+        mRtvDescriptorSize); // byte size of descriptor
+}
+D3D12_CPU_DESCRIPTOR_HANDLE Rendering::DepthStencilView()const
+{
+    return mDsvHeap->GetCPUDescriptorHandleForHeapStart();
 }

@@ -78,8 +78,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Downloads\d3d12book-master\d3d12book-master\Common\DDSTextureLoader.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="d3dx12.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Rendering.h" />
@@ -93,7 +93,6 @@
     <ResourceCompile Include="GameEngine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Downloads\d3d12book-master\d3d12book-master\Common\DDSTextureLoader.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputManager.cpp" />

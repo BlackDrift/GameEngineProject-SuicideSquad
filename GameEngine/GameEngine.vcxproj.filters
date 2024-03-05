@@ -16,6 +16,9 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
+    <Filter Include="Source\Private\Vendor">
+      <UniqueIdentifier>{45139b1e-7f1d-47ec-b160-d9a2c650301e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -45,8 +48,8 @@
     <ClInclude Include="Texture.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Downloads\d3d12book-master\d3d12book-master\Common\DDSTextureLoader.h">
-      <Filter>Source\Public</Filter>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Source\Private\Vendor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -77,9 +80,6 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Source\Private</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Downloads\d3d12book-master\d3d12book-master\Common\DDSTextureLoader.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
