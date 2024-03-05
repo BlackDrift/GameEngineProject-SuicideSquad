@@ -3,6 +3,7 @@
 class Component
 {
 	Component(GameObject gameObject);
+public:
 
 };
 
