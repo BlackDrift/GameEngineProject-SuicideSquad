@@ -18,8 +18,11 @@ int _stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	while (true) 
 	{
-		if (Window::ProcessMessages() == false)
+		if (Window::ProcessMessages() == false) {
 			return 0;
+		}
+
+		renderer.Draw();
 	}
 
 	//MessageBox(window.hWnd, message, nom de la box, MB_OK);

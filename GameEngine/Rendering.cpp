@@ -4,7 +4,6 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
 {
     IDXGIFactory2* dxgiFactory;
 	IDXGIAdapter1* adapter = nullptr;
-	ID3D12Device* device = nullptr;
     m4xMsaaState = false;
     m4xMsaaQuality = 1;
 	HRESULT result2 = D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&device));
@@ -73,7 +72,7 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
         D3D12_COMMAND_LIST_TYPE_DIRECT,
         mDirectCmdListAlloc.Get(), // Associated command allocator
         nullptr, // Initial PipelineStateObject
-        IID_PPV_ARGS(mCommandList.GetAddressOf())));
+        IID_PPV_ARGS(&mCommandList)));
     // Start off in a closed state. This is because the first time we
     // refer to the command list we will Reset it, and it needs to be
     // closed before calling Reset.
@@ -189,8 +188,6 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
     vp.MaxDepth = 1.0f;
     mCommandList->RSSetViewports(1, &vp);
 
-    mCommandList->ClearRenderTargetView(CurrentBackBufferView(), DirectX::Colors::LightSteelBlue, 0, NULL);
-
     // Clean up resources
     //device->Release();
     //adapter->Release();
@@ -207,7 +204,38 @@ D3D12_CPU_DESCRIPTOR_HANDLE Rendering::CurrentBackBufferView()const
         mCurrBackBuffer, // index to offset
         mRtvDescriptorSize); // byte size of descriptor
 }
+
 D3D12_CPU_DESCRIPTOR_HANDLE Rendering::DepthStencilView()const
 {
     return mDsvHeap->GetCPUDescriptorHandleForHeapStart();
+}
+
+void Rendering::Draw() {
+    mDirectCmdListAlloc->Reset();
+    mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr);
+
+    mCommandList->ClearRenderTargetView(CurrentBackBufferView(), DirectX::Colors::LightSteelBlue, 0, NULL);
+
+    //Vertex vertices[] =
+    //{
+    //    { DirectX::XMFLOAT3(0.f, 0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Red) },
+    //    { DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Green) },
+    //    { DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Blue) },
+    //};
+
+    //const UINT64 vbByteSize = 8 * sizeof(Vertex);
+
+    //D3dUtil buffer;
+
+    //Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
+    //Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
+    //VertexBufferGPU = buffer.D3dUtil::CreateDefaultBuffer(device, mCommandList, vertices, vbByteSize, VertexBufferUploader);
+
+    mCommandList->Close();
+    ID3D12CommandList* cLists[] = { mCommandList };
+    mCommandQueue->ExecuteCommandLists(1 ,cLists);
+
+    UINT syncInterval = 0;
+    UINT presentFlags = 0;
+    swapChain->Present(syncInterval, presentFlags);
 }
