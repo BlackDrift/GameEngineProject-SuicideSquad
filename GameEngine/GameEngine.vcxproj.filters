@@ -54,6 +54,9 @@
     <ClInclude Include="D3dUtil.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -92,6 +95,9 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="D3dUtil.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
