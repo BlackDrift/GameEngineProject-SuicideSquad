@@ -146,7 +146,14 @@ Shader::Shader()
     spDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     spDesc.NodeMask = 0;
     this -> result = D3D12CreateDevice(0, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&this->d3dDevice));
+    this->m_currentFenceValue = 0;
+    this->d3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&this->d3dFence));
+    this->m_fenceEvent = CreateEventEx(0, 0, 0, EVENT_ALL_ACCESS);
     this->d3dDevice->CreateDescriptorHeap(&spDesc, IID_PPV_ARGS(&this->m_cbvHeap));
+    D3D12_COMMAND_QUEUE_DESC cmdQueueDesc = { };
+    cmdQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    cmdQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    d3dDevice->CreateCommandQueue(&cmdQueueDesc, IID_PPV_ARGS(&d3dCommandQueue));
     this->d3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->d3dCommandAllocator));
     this->d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->d3dCommandAllocator, 0, IID_PPV_ARGS(&this->d3dCommandList));
     this->d3dCommandList->Close();

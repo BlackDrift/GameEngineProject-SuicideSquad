@@ -41,6 +41,10 @@ public:
     ID3D12GraphicsCommandList* d3dCommandList;
     ID3D12CommandAllocator* d3dCommandAllocator;
     UINT cbvDescriptorSize;
+    ID3D12CommandQueue* d3dCommandQueue;
+    UINT64 m_currentFenceValue;
+    ID3D12Fence* d3dFence;
+    HANDLE m_fenceEvent;
     enum Type
     {
         SHADER_VS,
