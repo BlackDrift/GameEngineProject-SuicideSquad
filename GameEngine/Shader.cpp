@@ -4,6 +4,8 @@
 #include "D3DCompiler.h"
 #include "Window.h"
 #include <iostream>
+#include "combaseapi.h"
+
 
 #define ROUND_256(x) ((x + 255) & ~255)
 
@@ -138,6 +140,17 @@ static void generateSerializedRootSignature(ShaderParameter* rootParams, ID3DBlo
 Shader::Shader()
     : m_serializedRootSig(0), m_rootSignature(0)
 {
+    D3D12_DESCRIPTOR_HEAP_DESC spDesc;
+    spDesc.NumDescriptors = 65536;
+    spDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+    spDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+    spDesc.NodeMask = 0;
+    this -> result = D3D12CreateDevice(0, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&this->d3dDevice));
+    this->d3dDevice->CreateDescriptorHeap(&spDesc, IID_PPV_ARGS(&this->m_cbvHeap));
+    this->d3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->d3dCommandAllocator));
+    this->d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->d3dCommandAllocator, 0, IID_PPV_ARGS(&this->d3dCommandList));
+    this->d3dCommandList->Close();
+    this->cbvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     ZeroMemory(m_shaderBytecodes, SHADER_NUM_TYPES * sizeof(ID3DBlob*));
 }
 
@@ -162,11 +175,11 @@ void Shader::destroy()
 
 bool Shader::compile()
 {
-    //ID3D12Device* device = Graphics::getInstance().getDevice();
+    ID3D12Device* device = this->d3dDevice;
 
     generateSerializedRootSignature(m_parameters.data(), &m_serializedRootSig);
 
-    //device->CreateRootSignature(0, m_serializedRootSig->GetBufferPointer(), m_serializedRootSig->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
+    device->CreateRootSignature(0, m_serializedRootSig->GetBufferPointer(), m_serializedRootSig->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature));
 
     return true;
 }
@@ -189,32 +202,32 @@ void Shader::getDefaultPipelineState(D3D12_GRAPHICS_PIPELINE_STATE_DESC& outDesc
 
 void Shader::setConstantBuffer(int shaderRegister, int offset)
 {
-    //ID3D12Device* device = Graphics::getInstance().getDevice();
-    //ID3D12DescriptorHeap* cbvHeap = Graphics::getInstance().getShaderVisibleCBVHeap();
-    //ID3D12GraphicsCommandList* cmdList = Graphics::getInstance().getCommandList();
-    //UINT cbvDescriptorSize = Graphics::getInstance().getCBVDescriptorSize();
+    ID3D12Device* device = this->d3dDevice;
+    ID3D12DescriptorHeap* cbvHeap = this->m_cbvHeap;
+    ID3D12GraphicsCommandList* cmdList = this->d3dCommandList;
+    UINT cbvDescriptorSize = this->cbvDescriptorSize;
 
     INT descriptorOffset, tableIndex;
     getOffset(&descriptorOffset, &tableIndex, m_parameters.data(), shaderRegister, TYPE_CONSTANT_BUFFER);
 
-    //cmdList->SetGraphicsRootDescriptorTable(
-        //tableIndex,
-        //CD3DX12_GPU_DESCRIPTOR_HANDLE(cbvHeap->GetGPUDescriptorHandleForHeapStart(), offset, cbvDescriptorSize));
+    cmdList->SetGraphicsRootDescriptorTable(
+        tableIndex,
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(cbvHeap->GetGPUDescriptorHandleForHeapStart(), offset, cbvDescriptorSize));
 }
 
 void Shader::setTexture2D(int shaderRegister, int offset)
 {
-    //ID3D12Device* device = Graphics::getInstance().getDevice();
-    //ID3D12DescriptorHeap* cbvHeap = Graphics::getInstance().getShaderVisibleCBVHeap();
-    //ID3D12GraphicsCommandList* cmdList = Graphics::getInstance().getCommandList();
-    //UINT cbvDescriptorSize = Graphics::getInstance().getCBVDescriptorSize();
+    ID3D12Device* device = this->d3dDevice;
+    ID3D12DescriptorHeap* cbvHeap = this->m_cbvHeap;
+    ID3D12GraphicsCommandList* cmdList = this->d3dCommandList;
+    UINT cbvDescriptorSize = this->cbvDescriptorSize;
 
     INT descriptorOffset, tableIndex;
     getOffset(&descriptorOffset, &tableIndex, m_parameters.data(), shaderRegister, TYPE_TEXTURE_2D);
 
-    //cmdList->SetGraphicsRootDescriptorTable(
-        //tableIndex,
-        //CD3DX12_GPU_DESCRIPTOR_HANDLE(cbvHeap->GetGPUDescriptorHandleForHeapStart(), offset, cbvDescriptorSize));
+    cmdList->SetGraphicsRootDescriptorTable(
+        tableIndex,
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(cbvHeap->GetGPUDescriptorHandleForHeapStart(), offset, cbvDescriptorSize));
 }
 
 void Shader::compileShaderSource(Type shaderType, const char* source, SIZE_T size)

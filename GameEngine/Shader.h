@@ -35,7 +35,12 @@ struct ShaderParameter
 class Shader
 {
 public:
-
+    HRESULT result;
+    ID3D12Device* d3dDevice;
+    ID3D12DescriptorHeap* m_cbvHeap;
+    ID3D12GraphicsCommandList* d3dCommandList;
+    ID3D12CommandAllocator* d3dCommandAllocator;
+    UINT cbvDescriptorSize;
     enum Type
     {
         SHADER_VS,
