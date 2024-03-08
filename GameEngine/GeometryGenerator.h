@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include <DirectXMath.h>
 #include <d3d12.h>
 #include <vector>
@@ -91,6 +91,6 @@ public:
 
 private:
 	std::vector<uint16> mIndices16;
-};
+};*/
 
 

@@ -1,9 +1,5 @@
 #include "Time.h"
 
-Time::Time() {
-    reset();
-}
-
 void Time::reset() {
     startClock = clock();
     lastFrameClock = startClock;

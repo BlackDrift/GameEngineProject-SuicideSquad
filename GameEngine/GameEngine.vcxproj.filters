@@ -63,6 +63,9 @@
     <ClInclude Include="Time.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -110,6 +113,9 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="Time.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>

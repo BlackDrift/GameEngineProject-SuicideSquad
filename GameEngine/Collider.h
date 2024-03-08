@@ -3,7 +3,7 @@
 #include "Component.h"
 #include <d3d12.h>
 #include <DirectXMath.h>
-#include "T"
+#include "Time.h"
 
 class Collider : public Component
 {
