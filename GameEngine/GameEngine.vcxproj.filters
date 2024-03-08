@@ -57,6 +57,12 @@
     <ClInclude Include="Collider.h">
       <Filter>Source\Public</Filter>
     </ClInclude>
+    <ClInclude Include="GeometryGenerator.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>Source\Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -98,6 +104,12 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
     <ClCompile Include="Collider.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp">
+      <Filter>Source\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
