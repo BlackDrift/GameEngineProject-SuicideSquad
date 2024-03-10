@@ -1,9 +1,15 @@
 /*#pragma once
 
 #include "Component.h"
-
+#include "Collider.h"
 #include <vector>
 #include <map>
+
+struct CollisionEvent
+{
+	RigidBody* m_rigidBodyA;
+	RigidBody* m_rigidBodyB;
+};
 
 struct PhysicsWorldCinfo
 {

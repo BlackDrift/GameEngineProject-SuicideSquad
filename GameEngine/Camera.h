@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Component.h"
 #include "Window.h"
 #include <d3d12.h>
@@ -19,4 +19,4 @@ public:
     void SetPosition(float x, float y, float z);
 
     void SetRotation(float pitch, float yaw, float roll);
-};
+};*/
