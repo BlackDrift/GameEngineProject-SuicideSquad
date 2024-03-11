@@ -1,4 +1,4 @@
-/*#include "Collider.h"
+#include "Collider.h"
 
 using namespace DirectX;
 
@@ -9,28 +9,6 @@ void PhysicsShapeSphere::getAabb(AABB& out) const
 	nr = DirectX::XMVectorNegate(pr);
 
 	out = AABB(nr, pr);
-}
-
-class CollisionAgent_SphereSphere : public CollisionAgent
-{
-public:
-
-	virtual bool getOverlapping(RigidBody* a, RigidBody* b) const override
-	{
-		PhysicsShapeSphere* shapeA = reinterpret_cast<PhysicsShapeSphere*>(a->getShape());
-		PhysicsShapeSphere* shapeB = reinterpret_cast<PhysicsShapeSphere*>(b->getShape());
-
-		XMVECTOR posA = XMLoadFloat4(&a->getPosition());
-		XMVECTOR posB = XMLoadFloat4(&b->getPosition());
-		float dist = XMVectorGetX(XMVector3Length(XMVectorSubtract(posB, posA)));
-
-		return dist < shapeA->getRadius() + shapeB->getRadius();
-	}
-};
-
-CollisionAgent* CollisionAgent_SphereSphere_factory()
-{
-	return new CollisionAgent_SphereSphere();
 }
 
 PhysicsShape::PhysicsShape(EShapeType t)
@@ -106,21 +84,6 @@ void RigidBody::setMotionType(EMotionType mt)
 }
 
 
-class MyCollideListener : public PhysicsContactListener
-{
-public:
-
-	virtual void onCollisionAdded(const CollisionEvent& event) override
-	{
-		Collider* myRb = reinterpret_cast<Collider*>(event.m_rigidBodyA->getUserData());
-		if (myRb) {
-
-			myRb->onCollide(reinterpret_cast<Component*>(event.m_rigidBodyB->getUserData()));
-		}
-	}
-};
-
-
 
 Collider::Collider(float radius, EMotionType motionType)
 	: m_rigidBody(0)
@@ -172,13 +135,9 @@ void Collider::OnSpawn(World* world)
 	XMStoreFloat4(&info.m_position, XMLoadFloat3(&this->GetTransform().getPosition()));
 	m_rigidBody = new RigidBody(info);
 
-	m_listener = new MyCollideListener();
 	m_rigidBody->setUserData(this);
-	m_rigidBody->addContactListener(m_listener);
 
 	m_rigidBody->applyImpulse(XMLoadFloat4(&m_linearVelocity));
-
-	world->getPhysicsWorld()->addRigidBody(m_rigidBody);
 }
 
 void Collider::OnUpdate(const Time& timer)
@@ -193,7 +152,6 @@ void Collider::OnDestroy(World* world)
 {
 	if (m_rigidBody)
 	{
-		world->getPhysicsWorld()->removeRigidBody(m_rigidBody);
 
 		delete m_rigidBody;
 		delete m_shape;
@@ -213,4 +171,4 @@ XMVECTOR Collider::GetLinearVelocity()
 void Collider::setLinearVelocity(DirectX::FXMVECTOR p)
 {
 	m_rigidBody->setLinearVelocity(p);
-}*/
+}

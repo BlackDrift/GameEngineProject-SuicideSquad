@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 #include "Transform.h"
 #include "Component.h"
 #include "Texture.h"
@@ -13,4 +13,4 @@ class GameObject
 	float width;
 	float height;
 	std::vector<Component> listComponents;
-};*/
+};

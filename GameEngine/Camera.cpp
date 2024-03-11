@@ -1,4 +1,4 @@
-/*#include "Component.h"
+#include "Component.h"
 #include "Camera.h"
 #include <DirectXMath.h>
 #include <windows.h> // Inclure pour HWND
@@ -17,4 +17,4 @@
 
     void CameraComponent::SetRotation(float pitch, float yaw, float roll) {
         rotation = DirectX::XMFLOAT3(pitch, yaw, roll);
-    }*/
+    }

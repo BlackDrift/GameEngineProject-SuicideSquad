@@ -1,4 +1,4 @@
-/*#pragma once
+#pragma once
 #include <DirectXMath.h>
 #include <d3d12.h>
 #include <vector>
@@ -6,15 +6,44 @@
 #include <algorithm>
 #include <DirectXColors.h>
 #include <DirectXMath.h>
-#include ""
+
+
+struct Vertex {
+	Vertex() {}
+	Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv) :
+		Position(p),
+		Normal(n),
+		TangentU(t),
+		TexC(uv) {}
+	Vertex(
+		float px, float py, float pz,
+		float nx, float ny, float nz,
+		float tx, float ty, float tz,
+		float u, float v) :
+		Position(px, py, pz),
+		Normal(nx, ny, nz),
+		TangentU(tx, ty, tz),
+		TexC(u, v) {}
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT3 Normal;
+	DirectX::XMFLOAT3 TangentU;
+	DirectX::XMFLOAT2 TexC;
+};
+
+using uint16 = std::uint16_t;
+using uint32 = std::uint32_t;
+struct MeshData
+{
+	std::vector<Vertex> Vertices;
+	std::vector<uint32> Indices32;
+	std::vector<uint16>& GetIndices16();
+};
 
 
 
 class GeometryGenerator
 {
 public:
-	using uint16 = std::uint16_t;
-	using uint32 = std::uint32_t;
 
 
 	void CreateCylinder(
@@ -51,46 +80,14 @@ public:
 		{
 			meshData.Indices32.push_back(centerIndex);
 			meshData.Indices32.push_back(baseIndex + i + 1);
-			DRAWING IN DIRECT3D PART II 279
-				meshData.Indices32.push_back(baseIndex + i);
+			meshData.Indices32.push_back(baseIndex + i);
 		}
 	}
-
-
-	struct Vertex {
-		Vertex() {}
-		Vertex(const DirectX::XMFLOAT3& p, const DirectX::XMFLOAT3& n, const DirectX::XMFLOAT3& t, const DirectX::XMFLOAT2& uv) :
-			Position(p),
-			Normal(n),
-			TangentU(t),
-			TexC(uv) {}
-		Vertex(
-			float px, float py, float pz,
-			float nx, float ny, float nz,
-			float tx, float ty, float tz,
-			float u, float v) :
-			Position(px, py, pz),
-			Normal(nx, ny, nz),
-			TangentU(tx, ty, tz),
-			TexC(u, v) {}
-		DirectX::XMFLOAT3 Position;
-		DirectX::XMFLOAT3 Normal;
-		DirectX::XMFLOAT3 TangentU;
-		DirectX::XMFLOAT2 TexC;
-	};
-
-	struct MeshData
-	{
-		std::vector<Vertex> Vertices;
-		std::vector<uint32> Indices32;
-		std::vector<uint16>& GetIndices16();
-	};
-
 	
 
 
 private:
 	std::vector<uint16> mIndices16;
-};*/
+};
 
 

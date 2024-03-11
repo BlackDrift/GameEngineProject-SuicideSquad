@@ -1,4 +1,4 @@
-/*#include "GeometryGenerator.h"
+#include "GeometryGenerator.h"
 #include <cmath> // Pour les fonctions trigonométriques cosf et sinf
 #include <DirectXMath.h> // Pour les types et fonctions DirectX Math
 
@@ -81,7 +81,6 @@ void GeometryGenerator::CreateCylinder(
 
 		BuildCylinderTopCap(bottomRadius, topRadius, height,
 			sliceCount, stackCount, meshData);
-		BuildCylinderBottomCap(bottomRadius, topRadius, height,
-			sliceCount, stackCount, meshData);
-		return meshData;
-}*/
+		//BuildCylinderBottomCap(bottomRadius, topRadius, height,
+			//sliceCount, stackCount, meshData);
+}

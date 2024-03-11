@@ -1,45 +1,8 @@
-/*#pragma once
+#pragma once
 
 #include "Component.h"
 #include <iostream>
 #include <d3d12.h>
-#include <DirectXMath.h>
-#include "Time.h"
-#include "World.h"
-#include <vector>
-#include "transform.h"
-
-class PhysicsContactListener
-{
-public:
-
-	virtual void onCollisionAdded(const CollisionEvent& info) { }
-
-	virtual void onCollisionRemoved(const CollisionEvent& info) { }
-};
-
-struct Ray
-{
-	DirectX::XMFLOAT4 m_directionAndLength;
-	DirectX::XMFLOAT3 m_origin;
-};
-
-struct RayHitResult
-{
-	class RigidBody* m_collider;
-
-	DirectX::XMFLOAT3 m_hitLocation;
-	float m_hitParameter;
-};
-
-class CollisionAgent
-{
-public:
-
-	virtual bool getOverlapping(RigidBody* a, RigidBody* b) const = 0;
-};
-
-CollisionAgent* CollisionAgent_SphereSphere_factory();
 
 enum EShapeType
 {
@@ -157,15 +120,12 @@ public:
 	/// This is only possible for objects initially created with a dynamic motion type.
 	void setMotionType(EMotionType m);
 
-	inline void addContactListener(PhysicsContactListener* l) { m_contactListeners.push_back(l); }
 
 	inline void setUserData(void* d) { m_userData = d; }
 
 	inline PhysicsWorld* getWorld() const { return m_world; }
 
 	inline PhysicsShape* getShape() const { return m_shape; }
-
-	inline const std::vector<PhysicsContactListener*>& getContactListeners() const { return m_contactListeners; }
 
 
 
@@ -174,8 +134,6 @@ private:
 	PhysicsWorld* m_world;
 
 	PhysicsShape* m_shape;
-
-	std::vector<PhysicsContactListener*> m_contactListeners;
 
 	DirectX::XMFLOAT4 m_position;
 	DirectX::XMFLOAT4 m_rotation;
@@ -224,4 +182,4 @@ private:
 
 	float m_radius;
 	EMotionType m_motionType;
-};*/
+};
