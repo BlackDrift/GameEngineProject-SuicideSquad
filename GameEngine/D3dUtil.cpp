@@ -16,21 +16,31 @@ Microsoft::WRL::ComPtr<ID3D12Resource> D3dUtil::CreateDefaultBuffer(
     CD3DX12_RESOURCE_BARRIER transitionD = CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
 
     // Create the actual default buffer resource.
-    DX::ThrowIfFailed(device->CreateCommittedResource(
-        &heapD,
-        D3D12_HEAP_FLAG_NONE,
-        &bSize,
-        D3D12_RESOURCE_STATE_COMMON,
-        nullptr,
-        IID_PPV_ARGS(defaultBuffer.GetAddressOf())));
+    try {
+        device->CreateCommittedResource(
+            &heapD,
+            D3D12_HEAP_FLAG_NONE,
+            &bSize,
+            D3D12_RESOURCE_STATE_COMMON,
+            nullptr,
+            IID_PPV_ARGS(defaultBuffer.GetAddressOf()));
+    }
+    catch (...) {
+        throw;
+    }
     // In order to copy CPU memory data into our default buffer, we need
     // to create an intermediate upload heap.
-    DX::ThrowIfFailed(device->CreateCommittedResource(
-        &heapU,
-        D3D12_HEAP_FLAG_NONE,
-        &bSize,
-        D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
-        IID_PPV_ARGS(uploadBuffer.GetAddressOf())));
+    try {
+        device->CreateCommittedResource(
+            &heapU,
+            D3D12_HEAP_FLAG_NONE,
+            &bSize,
+            D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+            IID_PPV_ARGS(uploadBuffer.GetAddressOf()));
+    }
+    catch (...) {
+        throw;
+    }
     // Describe the data we want to copy into the default buffer.
     D3D12_SUBRESOURCE_DATA subResourceData = {};
     subResourceData.pData = initData;

@@ -50,29 +50,47 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
 
     // CREATE FENCE
 	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
-
-    DX::ThrowIfFailed(device->CreateFence(
-        0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence)));
-    mRtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-    mDsvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
-    mCbvSrvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-
+    try {
+        device->CreateFence(
+            0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
+        mRtvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+        mDsvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+        mCbvSrvDescriptorSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    }
+    catch (...) {
+        throw;
+    }
 
     // CREATE COMMAND QUEUE
     D3D12_COMMAND_QUEUE_DESC queueDesc = {};
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    DX::ThrowIfFailed(device->CreateCommandQueue(
-        &queueDesc, IID_PPV_ARGS(&mCommandQueue)));
-    DX::ThrowIfFailed(device->CreateCommandAllocator(
-        D3D12_COMMAND_LIST_TYPE_DIRECT,
-        IID_PPV_ARGS(mDirectCmdListAlloc.GetAddressOf())));
-    DX::ThrowIfFailed(device->CreateCommandList(
-        0,
-        D3D12_COMMAND_LIST_TYPE_DIRECT,
-        mDirectCmdListAlloc.Get(), // Associated command allocator
-        nullptr, // Initial PipelineStateObject
-        IID_PPV_ARGS(&mCommandList)));
+    try {
+        device->CreateCommandQueue(
+            &queueDesc, IID_PPV_ARGS(&mCommandQueue));
+    }
+    catch (...) {
+        throw;
+    }
+    try {
+        device->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_DIRECT,
+            IID_PPV_ARGS(mDirectCmdListAlloc.GetAddressOf()));
+    }
+    catch (...) {
+        throw;
+    }
+    try {
+        device->CreateCommandList(
+            0,
+            D3D12_COMMAND_LIST_TYPE_DIRECT,
+            mDirectCmdListAlloc.Get(), // Associated command allocator
+            nullptr, // Initial PipelineStateObject
+            IID_PPV_ARGS(&mCommandList));
+    }
+    catch (...) {
+        throw;
+    }
     // Start off in a closed state. This is because the first time we
     // refer to the command list we will Reset it, and it needs to be
     // closed before calling Reset.
@@ -121,13 +139,19 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
 	rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	rtvHeapDesc.NodeMask = 0;
 
-	DX::ThrowIfFailed(device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())));
+    try { device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(mRtvHeap.GetAddressOf())); }
+    catch (...) {
+        throw;
+    }
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
 	dsvHeapDesc.NumDescriptors = 1;
 	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	dsvHeapDesc.NodeMask = 0;
-	DX::ThrowIfFailed(device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())));
+    try { device->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf())); }
+    catch (...) {
+        throw;
+    }
 
     // CREATE RENDER TARGET VIEW
     CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHeapHandle(
@@ -135,8 +159,13 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
     for (UINT i = 0; i < swapChainBufferCount; i++)
     {
         // Get the ith buffer in the swap chain.
-        DX::ThrowIfFailed(swapChain->GetBuffer(
-            i, IID_PPV_ARGS(&mSwapChainBuffer[i])));
+        try {
+            swapChain->GetBuffer(
+                i, IID_PPV_ARGS(&mSwapChainBuffer[i]));
+        }
+        catch (...) {
+            throw;
+        }
         // Create an RTV to it.
         device->CreateRenderTargetView(
             mSwapChainBuffer[i].Get(), nullptr, rtvHeapHandle);
@@ -162,13 +191,18 @@ bool Rendering::InitializeD3D12(HWND hWnd, int screenWidth, int screenHeight)
     optClear.DepthStencil.Depth = 1.0f;
     optClear.DepthStencil.Stencil = 0;
     CD3DX12_HEAP_PROPERTIES pHeapProperties = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
-    DX::ThrowIfFailed(device->CreateCommittedResource(
-		&pHeapProperties,
-        D3D12_HEAP_FLAG_NONE,
-        &depthStencilDesc,
-        D3D12_RESOURCE_STATE_COMMON,
-        &optClear,
-        IID_PPV_ARGS(mDepthStencilBuffer.GetAddressOf())));
+    try {
+        device->CreateCommittedResource(
+            &pHeapProperties,
+            D3D12_HEAP_FLAG_NONE,
+            &depthStencilDesc,
+            D3D12_RESOURCE_STATE_COMMON,
+            &optClear,
+            IID_PPV_ARGS(mDepthStencilBuffer.GetAddressOf()));
+    }
+    catch (...) {
+        throw;
+    }
     // Create descriptor to mip level 0 of entire resource using the
     // format of the resource.
     device->CreateDepthStencilView(
@@ -216,20 +250,20 @@ void Rendering::Draw() {
 
     mCommandList->ClearRenderTargetView(CurrentBackBufferView(), DirectX::Colors::LightSteelBlue, 0, NULL);
 
-    //Vertex vertices[] =
-    //{
-    //    { DirectX::XMFLOAT3(0.f, 0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Red) },
-    //    { DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Green) },
-    //    { DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Blue) },
-    //};
+    Vertex vertices[] =
+    {
+        { DirectX::XMFLOAT3(0.f, 0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Red) },
+        { DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Green) },
+        { DirectX::XMFLOAT3(-0.5f, -0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Blue) },
+    };
 
-    //const UINT64 vbByteSize = 8 * sizeof(Vertex);
+    const UINT64 vbByteSize = 8 * sizeof(Vertex);
 
-    //D3dUtil buffer;
+    D3dUtil buffer;
 
-    //Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
-    //Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
-    //VertexBufferGPU = buffer.D3dUtil::CreateDefaultBuffer(device, mCommandList, vertices, vbByteSize, VertexBufferUploader);
+    Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
+    Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
+    VertexBufferGPU = buffer.D3dUtil::CreateDefaultBuffer(device, mCommandList, vertices, vbByteSize, VertexBufferUploader);
 
     mCommandList->Close();
     ID3D12CommandList* cLists[] = { mCommandList };

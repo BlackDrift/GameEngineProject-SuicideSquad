@@ -2,9 +2,11 @@
 #include <dxgi1_4.h>
 #include <wrl.h>
 #include <DirectXColors.h>
+#include <initguid.h>
 #include "d3dx12.h"
 #include "stdafx.h"
 #include "D3dUtil.h"
+
 
 class Rendering
 {
