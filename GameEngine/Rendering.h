@@ -6,6 +6,8 @@
 #include "d3dx12.h"
 #include "stdafx.h"
 #include "D3dUtil.h"
+#include <d3d12.h>
+#include "Shader.h"
 
 
 class Rendering

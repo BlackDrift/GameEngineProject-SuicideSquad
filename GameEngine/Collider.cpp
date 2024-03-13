@@ -155,11 +155,9 @@ void Collider::OnDestroy(World* world)
 
 		delete m_rigidBody;
 		delete m_shape;
-		delete m_listener;
 
 		m_rigidBody = 0;
 		m_shape = 0;
-		m_listener = 0;
 	}
 }
 

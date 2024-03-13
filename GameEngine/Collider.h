@@ -176,7 +176,6 @@ private:
 
 	RigidBody* m_rigidBody;
 	PhysicsShape* m_shape;
-	class MyCollideListener* m_listener;
 
 	DirectX::XMFLOAT4 m_linearVelocity;
 

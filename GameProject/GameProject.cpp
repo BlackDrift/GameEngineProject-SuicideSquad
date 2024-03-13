@@ -5,6 +5,7 @@
 #define WINDOW_HEIGHT 720
 
 int _stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+	int init = 0;
 
 	Rendering renderer;
 
@@ -21,8 +22,10 @@ int _stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		if (Window::ProcessMessages() == false) {
 			return 0;
 		}
-
-		renderer.Draw();
+		if (init == 0) {
+			renderer.Draw();
+			init = 1;
+		}
 	}
 
 	//MessageBox(window.hWnd, message, nom de la box, MB_OK);

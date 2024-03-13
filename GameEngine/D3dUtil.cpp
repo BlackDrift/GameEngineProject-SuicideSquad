@@ -12,8 +12,6 @@ Microsoft::WRL::ComPtr<ID3D12Resource> D3dUtil::CreateDefaultBuffer(
     CD3DX12_HEAP_PROPERTIES heapD = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
     CD3DX12_RESOURCE_DESC bSize = CD3DX12_RESOURCE_DESC::Buffer(byteSize);
     CD3DX12_HEAP_PROPERTIES heapU = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-    CD3DX12_RESOURCE_BARRIER transitionC = CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer.Get(), D3D12_RESOURCE_STATE_COMMON,D3D12_RESOURCE_STATE_COPY_DEST);
-    CD3DX12_RESOURCE_BARRIER transitionD = CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
 
     // Create the actual default buffer resource.
     try {
@@ -51,10 +49,12 @@ Microsoft::WRL::ComPtr<ID3D12Resource> D3dUtil::CreateDefaultBuffer(
     // will copy the CPU memory into the intermediate upload heap.
     // Then, using ID3D12CommandList::CopySubresourceRegion,
     // the intermediate upload heap data will be copied to mBuffer.
+    CD3DX12_RESOURCE_BARRIER transitionC = CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer.Get(), D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_COPY_DEST);
     cmdList->ResourceBarrier(1, &transitionC);
     UpdateSubresources<1>(cmdList,
         defaultBuffer.Get(), uploadBuffer.Get(),
         0, 0, 1, &subResourceData);
+    CD3DX12_RESOURCE_BARRIER transitionD = CD3DX12_RESOURCE_BARRIER::Transition(defaultBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_GENERIC_READ);
     cmdList->ResourceBarrier(1, &transitionD);
     // Note: uploadBuffer has to be kept alive after the above function
     // calls because the command list has not been executed yet that

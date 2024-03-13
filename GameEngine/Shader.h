@@ -77,6 +77,9 @@ public:
     template<Type T> inline ID3DBlob* getShaderBlob() const { return m_shaderBytecodes[T]; }
     template<Type T> inline D3D12_SHADER_BYTECODE getShaderBytecode() const { return { m_shaderBytecodes[T]->GetBufferPointer(), m_shaderBytecodes[T]->GetBufferSize() }; }
 
+    static const D3D12_GRAPHICS_PIPELINE_STATE_DESC m_defaultPipelineState;
+    ID3D12PipelineState* m_pso;
+
 
 private:
 
@@ -85,11 +88,7 @@ private:
 
 protected:
 
-    ID3D12PipelineState* m_pso;
-
     std::vector<ShaderParameter> m_parameters;
-
-    static const D3D12_GRAPHICS_PIPELINE_STATE_DESC m_defaultPipelineState;
     static const D3D12_INPUT_ELEMENT_DESC m_defaultInputLayout[];
 
 private:
