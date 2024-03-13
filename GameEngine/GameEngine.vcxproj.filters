@@ -119,4 +119,9 @@
       <Filter>Source\Private</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="default.hlsl">
+      <Filter>Source\Public</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

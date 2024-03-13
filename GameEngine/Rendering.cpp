@@ -246,7 +246,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE Rendering::DepthStencilView()const
 
 
 void Rendering::Draw() {
-    Shader shader;
+    ShaderDefault shader;
     mDirectCmdListAlloc->Reset();
     mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr);
 
@@ -265,7 +265,8 @@ void Rendering::Draw() {
     Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
     VertexBufferGPU = buffer.D3dUtil::CreateDefaultBuffer(device, mCommandList, vertices, vbByteSize, VertexBufferUploader);
-    device->CreateGraphicsPipelineState(&shader.m_defaultPipelineState, __uuidof(ID3D12PipelineState), &shader.m_pso);
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = shader.init();
+    device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&shader.m_pso));
 
     mCommandList->Close();
     ID3D12CommandList* cLists[] = { mCommandList };

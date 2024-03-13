@@ -1,7 +1,7 @@
 #pragma once
 
 #include <d3d12.h>
-
+#include "resource.h"
 #include <vector>
 
 enum ShaderParameterType
@@ -99,4 +99,13 @@ private:
 
     /// Compiled shader bytecodes.
     ID3DBlob* m_shaderBytecodes[SHADER_NUM_TYPES];
+};
+
+class ShaderDefault : public Shader
+{
+public:
+
+    ShaderDefault();
+
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC init();
 };
