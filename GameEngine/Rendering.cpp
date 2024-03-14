@@ -252,7 +252,7 @@ void Rendering::Draw() {
 
     mCommandList->ClearRenderTargetView(CurrentBackBufferView(), DirectX::Colors::LightSteelBlue, 0, NULL);
 
-    Vertex vertices[] =
+   /* Vertex vertices[] =
     {
         { DirectX::XMFLOAT3(0.f, 0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Red) },
         { DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Green) },
@@ -266,7 +266,7 @@ void Rendering::Draw() {
     Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
     VertexBufferGPU = buffer.D3dUtil::CreateDefaultBuffer(device, mCommandList, vertices, vbByteSize, VertexBufferUploader);
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = shader.init();
-    device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&shader.m_pso));
+    device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&shader.m_pso));*/
 
     mCommandList->Close();
     ID3D12CommandList* cLists[] = { mCommandList };
