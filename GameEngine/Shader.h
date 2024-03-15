@@ -1,111 +1,80 @@
 #pragma once
 
-#include <d3d12.h>
-#include "resource.h"
 #include <vector>
-
-enum ShaderParameterType
-{
-    TYPE_CONSTANT_BUFFER = 0,
-    TYPE_TEXTURE_2D,
-
-    TYPE_UNKNOWN = 0xFFFFFFFF,
-};
-
-enum ShaderParameterUpdate
-{
-    UPDATE_PER_INSTANCE = 0,
-    UPDATE_PER_MATERIAL,
-    UPDATE_PER_FRAME,
-    UPDATE_NUM_UPDATES,
-
-    UPDATE_UNKNOWN = 0xFFFFFFFF
-};
-
-struct ShaderParameter
-{
-    const char* name;
-    int slot;
-    ShaderParameterType type;
-    ShaderParameterUpdate updatePolicy;
-};
-
+#include <d3d12.h>
+#include "d3dx12.h"
+#include <DirectXMath.h>
 
 
 class Shader
 {
-public:
-    HRESULT result;
-    ID3D12Device* d3dDevice;
-    ID3D12DescriptorHeap* m_cbvHeap;
-    ID3D12GraphicsCommandList* d3dCommandList;
-    ID3D12CommandAllocator* d3dCommandAllocator;
-    UINT cbvDescriptorSize;
-    ID3D12CommandQueue* d3dCommandQueue;
-    UINT64 m_currentFenceValue;
-    ID3D12Fence* d3dFence;
-    HANDLE m_fenceEvent;
-    enum Type
-    {
-        SHADER_VS,
-        SHADER_PS,
-        SHADER_NUM_TYPES
-    };
-
-    Shader();
-    ~Shader();
-
-    void destroy();
-
-    template<Type T> inline void compileShaderSource(const char* source, SIZE_T size) { compileShaderSource(T, source, size); }
-
-    bool compile();
-
-    /// Root signature must be valid, and shader must have at least a vertex and a pixel shader.
-    bool isReady() const;
-
-    void getDefaultPipelineState(D3D12_GRAPHICS_PIPELINE_STATE_DESC& outDesc) const;
-
-    void setConstantBuffer(int shaderRegister, int offset);
-    void setTexture2D(int shaderRegister, int offset);
-
-
-    inline ID3D12PipelineState* getPipelineStateObject() const { return m_pso; }
-
-    inline ID3D12RootSignature* getRootSignature() const { return m_rootSignature; }
-
-    template<Type T> inline ID3DBlob* getShaderBlob() const { return m_shaderBytecodes[T]; }
-    template<Type T> inline D3D12_SHADER_BYTECODE getShaderBytecode() const { return { m_shaderBytecodes[T]->GetBufferPointer(), m_shaderBytecodes[T]->GetBufferSize() }; }
-
-    static const D3D12_GRAPHICS_PIPELINE_STATE_DESC m_defaultPipelineState;
-    ID3D12PipelineState* m_pso;
-
-
 private:
 
-    void compileShaderSource(Type shaderType, const char* source, SIZE_T size);
+	ID3D12PipelineState* m_pPipelineState;
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_PipelineDesc;
+	ID3DBlob* m_VSByteCode = nullptr;
+	ID3DBlob* m_PSByteCode = nullptr;
+	bool								m_M4XMsaaState;
+	UINT								m_M4XMsaaQuality;
 
+	ID3D12RootSignature* m_pRootSignature;
+	Microsoft::WRL::ComPtr<ID3DBlob>					m_SerializedRootSignature = nullptr;
+	Microsoft::WRL::ComPtr<ID3DBlob>					m_ErrorBlob = nullptr;
 
-protected:
+	HRESULT								m_HResult;
 
-    std::vector<ShaderParameter> m_parameters;
-    static const D3D12_INPUT_ELEMENT_DESC m_defaultInputLayout[];
+	std::vector<D3D12_INPUT_ELEMENT_DESC>	m_InputLayout;
 
-private:
+	int									m_rootParamSize;
+	int									m_isDescTable;
 
-    /// Root signature.
-    ID3D12RootSignature* m_rootSignature;
-    ID3DBlob* m_serializedRootSig;
-
-    /// Compiled shader bytecodes.
-    ID3DBlob* m_shaderBytecodes[SHADER_NUM_TYPES];
-};
-
-class ShaderDefault : public Shader
-{
 public:
+	ID3D12Device* m_Device;
+	struct ConstantBufferStruct
+	{
+		DirectX::XMFLOAT4X4 world;
+		DirectX::XMFLOAT4X4 view;
+		DirectX::XMFLOAT4X4 projection;
+		DirectX::XMFLOAT4X4 worldViewProjMatrix;
+	};
 
-    ShaderDefault();
+	struct VertexPositionColor
+	{
+		DirectX::XMFLOAT3 pos;
+		DirectX::XMFLOAT3 normal;
+		DirectX::XMFLOAT3 tangent;
+	};
 
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC init();
+	Shader();
+	~Shader();
+
+	void InitializeShader(ID3D12Device* device, std::string name = "default");
+
+	bool InitializePipelineState();
+
+	void InitializePipelineLayout();
+
+	void InitializePipelineLayoutShader();
+
+	bool InitializeRootSignatureShader();
+
+	bool InitializeRootSignature();
+
+	ID3D12RootSignature* GetRootSignature() {
+		return m_pRootSignature;
+	};
+
+	ID3D12PipelineState* GetPipelineState() {
+		return m_pPipelineState;
+	};
+
+	int GetRootParamSize() { return m_rootParamSize; };
+	int GetIsDescTable() { return m_isDescTable; };
+
+	void Update();
+
+	HRESULT CompileShaderS(const WCHAR* filename, const char* entrypoint, const char* profile, ID3DBlob** out_code);
+
+	std::vector<CD3DX12_STATIC_SAMPLER_DESC> GetStaticSamplers();
+
 };

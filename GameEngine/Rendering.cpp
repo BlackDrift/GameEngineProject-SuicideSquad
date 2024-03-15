@@ -246,13 +246,13 @@ D3D12_CPU_DESCRIPTOR_HANDLE Rendering::DepthStencilView()const
 
 
 void Rendering::Draw() {
-    ShaderDefault shader;
+    Shader shader;
     mDirectCmdListAlloc->Reset();
     mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr);
 
     mCommandList->ClearRenderTargetView(CurrentBackBufferView(), DirectX::Colors::LightSteelBlue, 0, NULL);
 
-   /* Vertex vertices[] =
+   Vertex vertices[] =
     {
         { DirectX::XMFLOAT3(0.f, 0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Red) },
         { DirectX::XMFLOAT3(0.5f, -0.5f, 0.5f), DirectX::XMFLOAT4(DirectX::Colors::Green) },
@@ -265,8 +265,7 @@ void Rendering::Draw() {
     Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferGPU = nullptr;
     Microsoft::WRL::ComPtr<ID3D12Resource> VertexBufferUploader = nullptr;
     VertexBufferGPU = buffer.D3dUtil::CreateDefaultBuffer(device, mCommandList, vertices, vbByteSize, VertexBufferUploader);
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = shader.init();
-    device->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&shader.m_pso));*/
+    shader.InitializeShader(device);
 
     mCommandList->Close();
     ID3D12CommandList* cLists[] = { mCommandList };
